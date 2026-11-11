@@ -1,5 +1,5 @@
 # rdt-of-simulator
-Resilient Digital Twin Operational Framework Simulator
+Resilient Digital Twin Operational Framework Simulator (RDT-OFS)
 
 Suggested demonstration sequence
 
