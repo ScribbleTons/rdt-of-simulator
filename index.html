@@ -3,109 +3,660 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RDT-OF | PVC Extrusion Resilience Simulator V3</title>
+<title>RDT-OF | PVC Extrusion Resilience Simulator V4</title>
 <style>
-:root{--bg:#0b1220;--panel:#111c2e;--panel2:#152238;--line:#263750;--muted:#91a3bb;--text:#e8eff8;--cyan:#46c7df;--green:#4bd39a;--amber:#f4bd59;--red:#f47777;--blue:#7da8ff}
-*{box-sizing:border-box}html,body{height:100%;margin:0}body{background:linear-gradient(140deg,#0b1220,#101b2c 60%,#0b1422);color:var(--text);font:14px/1.4 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}
-header{height:82px;padding:13px clamp(16px,3vw,42px);border-bottom:1px solid var(--line);background:#0b1422cc;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.eyebrow{color:var(--cyan);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}h1{font-size:clamp(20px,2vw,27px);margin:2px 0;letter-spacing:-.035em}header p{margin:0;color:var(--muted);font-size:11px}
-.head-right{display:flex;align-items:center;gap:10px}.clock{font-variant-numeric:tabular-nums;color:var(--cyan);font-weight:800;font-size:17px}
-main{height:calc(100% - 119px);max-width:1600px;margin:auto;padding:13px clamp(14px,2.5vw,34px);display:flex;flex-direction:column;gap:11px}
-.toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;min-height:39px}.toolbar label{font-size:11px;color:var(--muted);font-weight:750;text-transform:uppercase;letter-spacing:.08em}
-select,button{font:inherit;background:#1b2a42;color:var(--text);border:1px solid #344862;border-radius:8px;padding:8px 11px}select{min-width:180px;cursor:pointer}button{cursor:pointer}button:hover,select:hover{border-color:var(--cyan)}button.primary{background:#146078;border-color:#20839c}button:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}.spacer{flex:1}
-.panel{background:linear-gradient(160deg,#142137,#101a2b);border:1px solid var(--line);border-radius:12px;padding:13px;min-width:0;box-shadow:0 8px 28px #0002;transition:border-color .4s,box-shadow .4s}
-.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.kpi-card{min-height:91px}.kpi-label,.kicker{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:750}.kpi-value{font-size:clamp(23px,2.2vw,31px);font-weight:800;letter-spacing:-.04em;margin:4px 0 0;font-variant-numeric:tabular-nums}.kpi-sub{font-size:11px;color:var(--muted)}
-.critical-pulse{border-color:var(--red)!important;animation:criticalPulse 1.2s ease-in-out infinite;box-shadow:0 0 0 1px #f4777770,0 0 22px #f4777750!important}@keyframes criticalPulse{0%,100%{box-shadow:0 0 0 1px #f4777740,0 0 8px #f4777720}50%{box-shadow:0 0 0 2px #f47777,0 0 25px #f4777780;background:linear-gradient(160deg,#3a202c,#171b2b)}}
-.warning-glow{border-color:var(--amber)!important;box-shadow:0 0 14px #f4bd5925}.good{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}.cyan{color:var(--cyan)}
-.content{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);gap:11px;flex:1;min-height:0}.left,.right{display:flex;flex-direction:column;gap:11px;min-height:0}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}h2{font-size:15px;margin:0 0 2px}h3{font-size:12px;margin:0}.sub{font-size:11px;color:var(--muted);margin:0}.status{display:inline-flex;align-items:center;gap:6px;border-radius:30px;padding:4px 9px;font-size:10px;font-weight:750;background:#26354b;color:#c8d5e5;white-space:nowrap}.dot{width:7px;height:7px;border-radius:50%;background:currentColor}
-.machine-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.machine{padding:10px;background:#101b2b;border:1px solid var(--line);border-radius:9px}.machine .stage{font-size:10px;color:var(--muted);margin:2px 0 8px;min-height:14px}.metric{display:flex;justify-content:space-between;gap:8px;margin:7px 0 3px;font-size:10px;color:var(--muted)}.metric b{color:var(--text);font-variant-numeric:tabular-nums}.bar{height:5px;background:#26364d;border-radius:8px;overflow:hidden}.bar i{height:100%;display:block;border-radius:8px;transition:width .25s}
-.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;flex:1;min-height:0}.chart-panel{padding:10px 12px 7px;min-height:0}.chart-title{display:flex;justify-content:space-between;gap:8px;align-items:start}.chart-title small{color:var(--muted);font-size:10px}svg.chart{width:100%;height:clamp(125px,18vh,175px);display:block}.gridline{stroke:#26364b;stroke-dasharray:3 4}.axis{stroke:#35465f}.tick{fill:#8295ae;font-size:10px}.series{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:10px}.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
-.scenario-panel{flex:1;min-height:0}.scenario-select{width:100%;margin:8px 0}.scenario-desc{background:#101b2b;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:11px;color:var(--muted);min-height:52px}.scenario-desc strong{display:block;color:var(--text);font-size:12px;margin-bottom:3px}.scenario-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.scenario-actions button{font-size:11px;padding:7px 10px}.progress{height:5px;background:#26364d;border-radius:8px;overflow:hidden;margin-top:12px}.progress i{display:block;height:100%;background:var(--cyan);width:0;transition:width .3s}
-.decisions{display:grid;gap:7px}.decision{padding:9px;border:1px solid var(--line);border-radius:8px;background:#101b2b}.decision strong{font-size:11px}.decision p{margin:3px 0 0;color:var(--muted);font-size:10px}.trace{font-size:10px;color:var(--muted);margin-top:auto}.trace strong{color:var(--text)}
-footer{height:37px;border-top:1px solid var(--line);padding:9px clamp(16px,3vw,42px);color:var(--muted);font-size:10px}
-body.presentation header{height:94px}body.presentation main{padding-top:18px;gap:14px}body.presentation .kpi-card{min-height:105px}body.presentation .kpi-value{font-size:clamp(28px,2.8vw,40px)}body.presentation .panel{padding:16px}body.presentation svg.chart{height:clamp(150px,21vh,210px)}body.presentation h2{font-size:17px}
-@media(max-width:900px){body{overflow:auto}header{height:auto;align-items:flex-start;flex-direction:column}.head-right{width:100%;justify-content:space-between}main{height:auto;min-height:calc(100% - 119px)}.content{grid-template-columns:1fr}.charts{min-height:250px}.scenario-panel{min-height:220px}}
-@media(max-width:600px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.machine-grid{grid-template-columns:1fr}.charts{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar select{flex:1}footer{height:auto}}
+:root{
+  --bg:#0b1220;--panel:#111c2e;--panel2:#152238;--line:#263750;
+  --muted:#91a3bb;--text:#e8eff8;--cyan:#46c7df;--green:#4bd39a;
+  --amber:#f4bd59;--red:#f47777;--blue:#7da8ff;--purple:#b388ff;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:linear-gradient(140deg,#0b1220,#101b2c 60%,#0b1422);
+  color:var(--text);
+  font:13.5px/1.4 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+header{
+  min-height:70px;padding:10px clamp(16px,2.5vw,36px);
+  border-bottom:1px solid var(--line);background:#0b1422e6;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;
+}
+.eyebrow{color:var(--cyan);font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+h1{font-size:clamp(18px,1.8vw,24px);margin:1px 0;letter-spacing:-.03em}
+header p{margin:0;color:var(--muted);font-size:11px}
+.head-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.clock{font-variant-numeric:tabular-nums;color:var(--cyan);font-weight:800;font-size:17px;background:#111c2e;padding:4px 10px;border-radius:8px;border:1px solid var(--line)}
+.fn-badge{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:#163047;color:var(--cyan);border:1px solid #265478}
+
+.guide-banner{
+  background:linear-gradient(90deg,#12293e,#172338);
+  border-bottom:1px solid #294666;
+  padding:7px clamp(16px,2.5vw,36px);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-size:11.5px;color:#cfe2f7;flex-shrink:0;
+}
+.guide-banner strong{color:var(--cyan)}
+.guide-steps{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.guide-steps span{display:inline-flex;align-items:center;gap:5px}
+.guide-steps b{background:#1d3b58;color:var(--cyan);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:10px}
+.guide-close{background:transparent;border:1px solid #355070;color:var(--muted);padding:2px 8px;border-radius:6px;font-size:11px;cursor:pointer}
+.guide-close:hover{color:var(--text);border-color:var(--cyan)}
+
+main{
+  flex:1;min-height:0;max-width:1640px;width:100%;margin:auto;
+  padding:10px clamp(14px,2.2vw,32px);
+  display:flex;flex-direction:column;gap:10px;
+}
+
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;flex-shrink:0}
+.tabs{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  background:#0e1726;padding:4px;border-radius:10px;border:1px solid var(--line);
+}
+.tab-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  background:transparent;border:1px solid transparent;color:var(--muted);
+  padding:6px 11px;border-radius:7px;font-size:11.5px;font-weight:650;
+  cursor:pointer;transition:all .2s;
+}
+.tab-btn:hover{color:var(--text);background:#162338}
+.tab-btn.active{background:#1b2d48;color:var(--text);border-color:#3a567d;box-shadow:0 2px 8px #0003}
+.swatch{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.swatch-compound{background:conic-gradient(var(--amber),var(--red),var(--cyan),var(--green),var(--amber))}
+
+button{font:inherit;background:#1b2a42;color:var(--text);border:1px solid #344862;border-radius:8px;padding:6px 11px;cursor:pointer;transition:all .15s}
+button:hover{border-color:var(--cyan)}
+button.primary{background:#146078;border-color:#20839c;font-weight:600}
+button.primary:hover{background:#19738f}
+button:disabled{opacity:.45;cursor:not-allowed}
+
+.panel{
+  background:linear-gradient(160deg,#142137,#101a2b);
+  border:1px solid var(--line);border-radius:11px;padding:11px 13px;min-width:0;
+  box-shadow:0 6px 22px #0002;transition:border-color .35s,box-shadow .35s;
+}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;flex-shrink:0}
+.kpi-card{min-height:78px;padding:10px 12px}
+.kpi-label,.kicker{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:750}
+.kpi-value{font-size:clamp(20px,2vw,27px);font-weight:800;letter-spacing:-.035em;margin:2px 0 0;font-variant-numeric:tabular-nums}
+.kpi-sub{font-size:10.5px;color:var(--muted);margin-top:2px}
+
+.critical-pulse{border-color:var(--red)!important;animation:criticalPulse 1.2s ease-in-out infinite;box-shadow:0 0 0 1px #f4777770,0 0 20px #f4777745!important}
+@keyframes criticalPulse{0%,100%{box-shadow:0 0 0 1px #f4777740,0 0 8px #f4777720}50%{box-shadow:0 0 0 2px #f47777,0 0 22px #f4777775;background:linear-gradient(160deg,#3a202c,#171b2b)}}
+.warning-glow{border-color:var(--amber)!important;box-shadow:0 0 12px #f4bd5925}
+.good{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}.cyan{color:var(--cyan)}
+
+.content{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(330px,1.05fr);gap:10px;flex:1;min-height:0}
+.left,.right{display:flex;flex-direction:column;gap:10px;min-height:0}
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:7px}
+h2{font-size:14px;margin:0 0 1px}h3{font-size:11.5px;margin:0}
+.sub{font-size:10.5px;color:var(--muted);margin:0}
+.status{display:inline-flex;align-items:center;gap:5px;border-radius:30px;padding:3px 9px;font-size:10px;font-weight:750;background:#26354b;color:#c8d5e5;white-space:nowrap}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+.machine-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.machine-grid.four-col{grid-template-columns:repeat(4,minmax(0,1fr))}
+.machine{padding:9px;background:#101b2b;border:1px solid var(--line);border-radius:8px}
+.machine .stage{font-size:9.5px;color:var(--muted);margin:1px 0 6px}
+.metric{display:flex;justify-content:space-between;gap:6px;margin:5px 0 2px;font-size:10px;color:var(--muted)}
+.metric b{color:var(--text);font-variant-numeric:tabular-nums}
+.bar{height:4px;background:#26364d;border-radius:8px;overflow:hidden}
+.bar i{height:100%;display:block;border-radius:8px;transition:width .25s}
+
+.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;flex:1;min-height:0}
+.chart-panel{padding:9px 11px 6px;min-height:0;display:flex;flex-direction:column;justify-content:space-between}
+.chart-title{display:flex;justify-content:space-between;gap:8px;align-items:start}
+.chart-title small{color:var(--muted);font-size:10px}
+svg.chart{width:100%;height:clamp(115px,16vh,165px);display:block}
+.gridline{stroke:#26364b;stroke-dasharray:3 4}
+.tick{fill:#8295ae;font-size:9.5px}
+.series{fill:none;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:9.5px}
+.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}
+
+.timeline-pills{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:7px 0}
+.pill{
+  padding:5px 3px;border-radius:6px;border:1px solid var(--line);background:#0f1928;
+  color:var(--muted);font-size:9.5px;text-align:center;cursor:pointer;font-weight:600;
+  transition:all .15s;line-height:1.2;
+}
+.pill:hover{border-color:var(--cyan);color:var(--text)}
+.pill.active{background:#18344e;border-color:var(--cyan);color:var(--text);box-shadow:0 0 0 1px #46c7df50}
+.pill span{display:block;font-size:8.5px;opacity:.8;margin-top:1px}
+
+.scenario-desc{background:#101b2b;border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-size:11px;color:#c3d2e6;line-height:1.42}
+.scenario-desc strong{display:block;color:var(--text);font-size:11.5px;margin-bottom:2px}
+.scenario-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.scenario-actions button{font-size:11px;padding:6px 9px}
+.progress{height:4px;background:#26364d;border-radius:8px;overflow:hidden;margin-top:8px}
+.progress i{display:block;height:100%;background:var(--cyan);width:0;transition:width .3s}
+
+.decisions-panel{flex:1;min-height:0;overflow-y:auto}
+.decisions{display:grid;gap:6px}
+.decision{padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:#101b2b}
+.decision strong{font-size:11px;display:block}
+.decision p{margin:2px 0 0;color:var(--muted);font-size:10px;line-height:1.35}
+.opt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:5px}
+.opt-card{padding:6px;border-radius:6px;border:1px solid var(--line);background:#0d1624;font-size:9.5px}
+.opt-card.selected{border-color:var(--green);background:#112926}
+.opt-card b{display:block;font-size:10px;margin-bottom:2px}
+
+.trace{font-size:9.5px;color:var(--muted);flex-shrink:0}
+.trace strong{color:var(--text)}
+footer{height:30px;border-top:1px solid var(--line);padding:6px clamp(16px,2.5vw,36px);color:var(--muted);font-size:10px;flex-shrink:0}
+
+body.presentation header{min-height:82px}
+body.presentation .kpi-value{font-size:clamp(24px,2.5vw,34px)}
+body.presentation svg.chart{height:clamp(135px,19vh,195px)}
+body.presentation h2{font-size:15.5px}
+body.presentation .scenario-desc{font-size:12px}
+
+@media(max-width:1024px){
+  body{overflow:auto}
+  .content{grid-template-columns:1fr}
+  .machine-grid,.machine-grid.four-col{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .machine-grid,.machine-grid.four-col,.charts,.opt-grid{grid-template-columns:1fr}
+  .timeline-pills{grid-template-columns:repeat(3,1fr)}
+}
 </style>
 </head>
 <body>
 <header>
- <div><div class="eyebrow">Design-science artefact demonstration · RDT-OF · V3</div><h1>PVC Extrusion Resilience Simulator</h1><p>Constraint-focused digital-twin walkthrough for a five-stage PVC pressure-pipe line.</p></div>
- <div class="head-right"><span id="overallBadge" class="status warn"><i class="dot"></i> Scenario active</span><div class="clock" id="clock">14:10:00</div></div>
+  <div>
+    <div class="eyebrow">Design-Science Artefact Demonstration · RDT-OF · V4</div>
+    <h1>PVC Extrusion Resilience Simulator</h1>
+    <p>Five-stage PVC pressure-pipe extrusion line under compound infrastructure shocks (Power, Thermal, Cooling &amp; Telecom).</p>
+  </div>
+  <div class="head-right">
+    <span id="fnBadge" class="fn-badge">1. Monitoring</span>
+    <span id="overallBadge" class="status good"><i class="dot"></i> Grid supply</span>
+    <div class="clock" id="clock">14:10:00</div>
+  </div>
 </header>
+
+<div class="guide-banner" id="guideBanner">
+  <div class="guide-steps">
+    <strong>Evaluator Quick-Start:</strong>
+    <span><b>1</b> Click <strong>▶ Run Full Walkthrough</strong> (or step through T1–T4 pills)</span>
+    <span><b>2</b> Watch simultaneous <strong>Power + Thermal + Offline Edge Caching</strong> in Compound View</span>
+    <span><b>3</b> Inspect Option C Derating &amp; Timestamp Reconciliation before scoring</span>
+  </div>
+  <button class="guide-close" onclick="document.getElementById('guideBanner').style.display='none'">Dismiss</button>
+</div>
+
 <main>
- <div class="toolbar">
-  <label for="constraintSelect">Constraint view</label>
-  <select id="constraintSelect">
-   <option value="power">Power</option><option value="thermal">Thermal</option><option value="cooling">Cooling</option><option value="connectivity">Connectivity</option><option value="production">Production</option>
-  </select>
-  <span class="spacer"></span>
-  <button id="presentBtn">◎ Presentation mode</button>
- </div>
- <section class="kpis" id="kpis"></section>
- <section class="content">
-  <div class="left">
-   <div class="panel">
-    <div class="section-head"><div><h2 id="machineHeading">Machine-level operating state</h2><p class="sub" id="machineSub">Metrics associated with the selected constraint.</p></div><span id="lineBadge" class="status good"><i class="dot"></i> Line operating</span></div>
-    <div class="machine-grid" id="machineCards"></div>
-   </div>
-   <div class="charts" id="charts"></div>
-  </div>
-  <div class="right">
-   <div class="panel scenario-panel">
-    <div class="section-head"><div><h2>Scenario playback</h2><p class="sub">Choose a state, then play the animated transition.</p></div><span class="status cyan" id="stageBadge">Stage 1 / 5</span></div>
-    <label class="kicker" for="scenarioSelect">Scenario state</label>
-    <select id="scenarioSelect" class="scenario-select"></select>
-    <div class="scenario-desc" id="scenarioDesc"></div>
-    <div class="scenario-actions">
-     <button id="backBtn">↶ Previous</button><button class="primary" id="playBtn">▶ Play transition</button><button id="nextBtn">Next ↷</button><button id="resetBtn">Reset</button>
+  <div class="toolbar">
+    <div class="tabs" role="tablist" aria-label="Constraint views">
+      <button class="tab-btn active" data-view="compound" role="tab" aria-selected="true"><i class="swatch swatch-compound"></i>Compound (All)</button>
+      <button class="tab-btn" data-view="power" role="tab" aria-selected="false"><i class="swatch" style="background:var(--amber)"></i>Power</button>
+      <button class="tab-btn" data-view="thermal" role="tab" aria-selected="false"><i class="swatch" style="background:var(--red)"></i>Thermal</button>
+      <button class="tab-btn" data-view="cooling" role="tab" aria-selected="false"><i class="swatch" style="background:var(--green)"></i>Cooling</button>
+      <button class="tab-btn" data-view="connectivity" role="tab" aria-selected="false"><i class="swatch" style="background:var(--cyan)"></i>Connectivity</button>
+      <button class="tab-btn" data-view="production" role="tab" aria-selected="false"><i class="swatch" style="background:var(--blue)"></i>Production</button>
     </div>
-    <div class="progress"><i id="progressBar"></i></div>
-    <p class="sub" style="margin-top:7px" id="progressText">Ready to play</p>
-   </div>
-   <div class="panel">
-    <div class="section-head"><div><h2>Decision support & alerts</h2><p class="sub">Rule-based response logic for this constraint.</p></div></div>
-    <div class="decisions" id="decisions"></div>
-   </div>
-   <div class="trace"><strong>Artefact note:</strong> Demonstration data are synthetic and illustrative, not connected to industrial equipment or validated process limits.</div>
+    <button id="presentBtn">◎ Presentation mode</button>
   </div>
- </section>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="content">
+    <div class="left">
+      <div class="panel">
+        <div class="section-head">
+          <div>
+            <h2 id="machineHeading">Compound resilience · subsystem state</h2>
+            <p class="sub" id="machineSub">Simultaneous telemetry across power, thermal, cooling, and edge-buffering layers.</p>
+          </div>
+          <span id="lineBadge" class="status good"><i class="dot"></i> Line operating</span>
+        </div>
+        <div class="machine-grid" id="machineCards"></div>
+      </div>
+      <div class="charts" id="charts"></div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <div class="section-head">
+          <div>
+            <h2>Narrative scenario walkthrough</h2>
+            <p class="sub">Chapter 4 disruption &amp; recovery sequence (T1–T4).</p>
+          </div>
+          <span class="status cyan" id="stageBadge">Step 1 / 6</span>
+        </div>
+        <div class="timeline-pills" id="timelinePills"></div>
+        <div class="scenario-desc" id="scenarioDesc"></div>
+        <div class="scenario-actions">
+          <button id="backBtn">↶ Prev</button>
+          <button class="primary" id="walkthroughBtn">▶ Run Full Walkthrough</button>
+          <button id="nextBtn">Next ↷</button>
+          <button id="resetBtn">Reset</button>
+        </div>
+        <div class="progress"><i id="progressBar"></i></div>
+        <p class="sub" style="margin-top:5px" id="progressText">Ready · Baseline grid operation</p>
+      </div>
+
+      <div class="panel decisions-panel">
+        <div class="section-head">
+          <div>
+            <h2>RDT-OF decision engine &amp; resilience actions</h2>
+            <p class="sub">Power-aware matrix, look-ahead alerts &amp; edge sync protocol.</p>
+          </div>
+        </div>
+        <div class="decisions" id="decisions"></div>
+      </div>
+
+      <div class="trace"><strong>Artefact note:</strong> Synthetic illustrative parameters calibrated to Nigerian PVC extrusion baselines for DSR expert evaluation.</div>
+    </div>
+  </section>
 </main>
-<footer>RDT-OF · Resilient Digital Twin Operational Framework · Prototype for academic demonstration; calibrate with plant-specific engineering data before empirical or operational use.</footer>
+
+<footer>RDT-OF · Resilient Digital Twin Operational Framework · University of Lagos MSc Design Science Research Artefact</footer>
+
 <script>
 const $=id=>document.getElementById(id);
-const initial={gen:0,temp:194,cool:29,rpm:100,net:100,buffer:18,output:100,quality:98.5,time:'14:10',state:'Grid supply',sub:'Utility grid supplies the production line.',sku:'110mm heavy-wall',derated:false,grid:true,ats:false};
-let s={...initial},stageIndex=0,selectedTarget=1,playing=false,raf=null,startTimer=null,presentation=false;
+
 const scenarios=[
- {id:'grid',name:'Grid supply',time:'14:10',state:'Grid supply',sub:'Utility grid supplies the production line. Generator is on standby.',gen:0,temp:194,cool:29,rpm:100,net:100,buffer:18,output:100,quality:98.5,sku:'110mm heavy-wall',derated:false,grid:true,ats:false},
- {id:'ats',name:'ATS transfer · 45 seconds',time:'14:10:45',state:'ATS transfer in progress',sub:'Grid supply is interrupted. ATS transfer is underway; generator is not yet supplying the line.',gen:0,temp:194,cool:29,rpm:100,net:100,buffer:19,output:96,quality:98.5,sku:'110mm heavy-wall',derated:false,grid:false,ats:true},
- {id:'generator',name:'Generator takes over',time:'14:11',state:'Generator supplying line',sub:'Generator has taken over the line; load rises to 88%.',gen:88,temp:197,cool:29,rpm:100,net:100,buffer:20,output:100,quality:98.2,sku:'110mm heavy-wall',derated:false,grid:false,ats:false},
- {id:'derated',name:'Dynamic derating',time:'14:18',state:'Derated operation',sub:'Operating response reduces generator loading to 76%.',gen:76,temp:188,cool:29,rpm:82,net:100,buffer:23,output:82,quality:99.1,sku:'25mm thin-wall',derated:true,grid:false,ats:false},
- {id:'restored',name:'Grid restoration',time:'16:00',state:'Grid restored',sub:'Utility grid supplies the line again; generator load returns to 0%.',gen:0,temp:181,cool:20,rpm:82,net:100,buffer:28,output:82,quality:99.1,sku:'25mm thin-wall',derated:true,grid:true,ats:false}
+  {
+    id:'baseline',short:'14:05',label:'Baseline',fn:'1. Monitoring',
+    name:'T0 · Nominal Grid Operation',time:'14:05',state:'Grid supply',
+    sub:'Utility grid powers the 5-stage line at 100% speed producing 110mm heavy-wall PVC pressure pipe. WAN online; edge gateway streaming telemetry.',
+    gen:0,temp:191,cool:24,rpm:100,net:100,buffer:12,syncedPackets:0,output:100,quality:98.8,sku:'110mm heavy-wall',derated:false,grid:true,ats:false,predictBreach:false,showOptions:false,reconciled:false
+  },
+  {
+    id:'ats',short:'14:10',label:'Grid Drop',fn:'1. Monitoring',
+    name:'T1a · Grid Drop & 45s ATS Transfer',time:'14:10:45',state:'ATS transfer (45s)',
+    sub:'Unannounced municipal grid loss + simultaneous cellular WAN blackout (0% connectivity). ATS initiates 45-second changeover; ESP32 edge gateway switches to Store-and-Forward local caching.',
+    gen:0,temp:194,cool:29,rpm:100,net:0,buffer:34,syncedPackets:0,output:96,quality:98.5,sku:'110mm heavy-wall',derated:false,grid:false,ats:true,predictBreach:false,showOptions:false,reconciled:false
+  },
+  {
+    id:'generator',short:'14:11',label:'Gen 88%',fn:'1. Monitoring',
+    name:'T1b · Generator Takeover & Compound Drift',time:'14:11',state:'Generator (88% load)',
+    sub:'Backup diesel generator assumes load at 88% capacity. Zone 3 barrel temperature climbs to 197°C (+1.5°C/min) while WAN remains offline; edge buffer rises to 52%.',
+    gen:88,temp:197,cool:29,rpm:100,net:0,buffer:52,syncedPackets:0,output:100,quality:98.2,sku:'110mm heavy-wall',derated:false,grid:false,ats:false,predictBreach:false,showOptions:false,reconciled:false
+  },
+  {
+    id:'prediction',short:'14:15',label:'Forecast',fn:'2. Prediction',
+    name:'T2 · 60-Min Look-Ahead Breach Forecast',time:'14:15',state:'Thermal-Power Alert',
+    sub:'Edge predictive engine projects Zone 3 breaching the 205°C PVC degradation threshold in 28 minutes (causing 4-hr teardown) and generator overload (>95%) if 110mm batch continues.',
+    gen:91,temp:200,cool:30,rpm:100,net:0,buffer:68,syncedPackets:0,output:100,quality:97.6,sku:'110mm heavy-wall',derated:false,grid:false,ats:false,predictBreach:true,showOptions:false,reconciled:false
+  },
+  {
+    id:'derated',short:'14:18',label:'Derating',fn:'3. Optimisation',
+    name:'T3 · Option C: Dynamic Derating & SKU Shift',time:'14:18',state:'Derated (Option C)',
+    sub:'Digital twin evaluates Options A, B & C, executing Option C: screw RPM reduced -18% (to 82%), Zone 3 setpoint lowered -6°C, and line shifted to 25mm thin-wall conduit. Gen load drops to 76%; scrap <2%.',
+    gen:76,temp:188,cool:28,rpm:82,net:0,buffer:81,syncedPackets:0,output:82,quality:99.1,sku:'25mm thin-wall',derated:true,grid:false,ats:false,predictBreach:false,showOptions:true,reconciled:false
+  },
+  {
+    id:'restored',short:'16:00',label:'Recovery',fn:'4. Recovery',
+    name:'T4 · 3-Stage Grid Recovery & Edge Sync',time:'16:00',state:'Grid restored & synced',
+    sub:'Grid power and telecom WAN restored. RDT-OF executes 3-stage ramp-up back to 110mm heavy-wall pipe and reconciles 1,420 cached edge records via Eventual Consistency with zero duplicates.',
+    gen:0,temp:189,cool:20,rpm:100,net:100,buffer:14,syncedPackets:1420,output:100,quality:99.0,sku:'110mm heavy-wall',derated:false,grid:true,ats:false,predictBreach:false,showOptions:false,reconciled:true
+  }
 ];
+
+let activeView='compound',stageIndex=0,s={...scenarios[0]},walking=false,raf=null,stepTimer=null,presentation=false;
+
 const views={
- power:{title:'Power constraint',sub:'Supply state, generator loading and machine-level electrical demand.',kpis:[['Supply source',()=>s.grid?'Grid':s.ats?'ATS transfer':'Generator'],['Generator load',()=>s.gen+'%'],['Transfer state',()=>s.ats?'45-second ATS':'Stable'],['Line availability',()=>s.ats?'Transfer': 'Available']],metrics:[['Resin Mixing & Feeding','Stage 1 · material preparation',[['Drive demand',()=>Math.round(s.gen*.65)+'%','gen'],['Feed drive',()=>Math.round(s.rpm*.72)+'%','rpm']]],['Twin-Screw Extruder','Stage 2 · process bottleneck',[['Electrical load',()=>Math.round(s.gen)+'%','gen'],['Screw speed',()=>s.rpm+'%','rpm']]],['Cooling & Calibration','Stage 3 · auxiliary systems',[['Auxiliary demand',()=>Math.round(s.gen*.24)+'%','gen'],['Cooling pump',()=>Math.round(s.gen*.18)+'%','gen']]]],charts:[['Generator loading','% capacity',()=>[{name:'Generator load',data:trend(s.gen,s.gen===88?0:s.gen===76?0:0),color:'#f4bd59'}],95,'Generator alert threshold'],['Machine electrical demand','% reference',()=>[{name:'Extruder',data:trend(s.gen,s.gen*.0),color:'#46c7df'},{name:'Auxiliaries',data:trend(s.gen*.24,0),color:'#4bd39a'}],null,null]]},
- thermal:{title:'Thermal constraint',sub:'Extruder zone temperatures, thermal drift and process response.',kpis:[['Zone 3 temperature',()=>s.temp+'°C'],['Critical limit',()=>'205°C'],['Thermal margin',()=>Math.max(0,205-s.temp).toFixed(2) +'°C'],['Operating response',()=>s.derated?'Derated':'Nominal']],metrics:[['Twin-Screw Extruder','Stage 2 · heat generation',[['Zone 3',()=>s.temp+'°C','temp'],['Screw speed',()=>s.rpm+'%','rpm']]],['Calibration & Cooling','Stage 3 · heat removal',[['Cooling water',()=>s.cool+'°C','cool'],['Thermal load',()=>Math.round((s.temp-160)/60*100)+'%','temp']]],['Haul-Off & Cutter','Stage 4 · line synchronisation',[['Line speed',()=>s.rpm+'%','rpm'],['Process state',()=>s.derated?'Reduced':'Nominal','rpm']]]],charts:[['Extruder temperature','°C',()=>[{name:'Zone 3',data:trend(s.temp,s.temp>190?1:-.2),color:'#46c7df'}],205,'Critical limit'],['Thermal risk index','Index',()=>[{name:'Thermal risk',data:trend(Math.max(0,(s.temp-175)/30*100),s.temp>195?1:0),color:'#f47777'}],100,'High-risk boundary']]},
- cooling:{title:'Cooling constraint',sub:'Cooling-water temperature, cooling capacity and dimensional stability.',kpis:[['Cooling water',()=>s.cool+'°C'],['Alert threshold',()=>'30°C'],['Thermal margin',()=>Math.max(0,30-s.cool).toFixed(2) +'°C'],['Cooling condition',()=>s.cool>=30?'Constrained':'Stable']],metrics:[['Vacuum Calibration','Stage 3 · primary cooling',[['Water temperature',()=>s.cool+'°C','cool'],['Cooling demand',()=>Math.min(100,Math.round(s.cool/40*100))+'%','cool']]],['Twin-Screw Extruder','Stage 2 · heat input',[['Zone 3 temperature',()=>s.temp+'°C','temp'],['Screw speed',()=>s.rpm+'%','rpm']]],['Haul-Off & Cutter','Stage 4 · dimensional control',[['Line speed',()=>s.rpm+'%','rpm'],['Output rate',()=>s.output+'%','output']]]],charts:[['Cooling-water temperature','°C',()=>[{name:'Cooling water',data:trend(s.cool,s.cool>=30?.3:-.1),color:'#4bd39a'}],30,'Alert threshold'],['Extruder zone temperature','°C',()=>[{name:'Zone 3',data:trend(s.temp,s.cool>=30?.6:-.1),color:'#46c7df'}],205,'Critical limit']]},
- connectivity:{title:'Connectivity constraint',sub:'WAN availability, edge buffering and data continuity.',kpis:[['Network availability',()=>s.net+'%'],['Edge buffer used',()=>s.buffer+'%'],['Data visibility',()=>s.net<20?'Edge only':s.net<80?'Degraded':'Online'],['Record continuity',()=>'Maintained']],metrics:[['Edge Gateway','Plant data acquisition',[['WAN availability',()=>s.net+'%','net'],['Buffer utilisation',()=>s.buffer+'%','buffer']]],['Twin-Screw Extruder','Stage 2 · local telemetry',[['Local telemetry',()=>'Active','net'],['Zone 3 temperature',()=>s.temp+'°C','temp']]],['Production Monitoring','Line-level visibility',[['Production output',()=>s.output+'%','output'],['Event queue',()=>s.buffer+'% used','buffer']]]],charts:[['Network availability','%',()=>[{name:'WAN availability',data:trend(s.net,0),color:'#46c7df'}],20,'Edge-only boundary'],['Edge buffer utilisation','%',()=>[{name:'Buffer used',data:trend(s.buffer,s.net<20?1:0),color:'#f4bd59'}],80,'High buffer alert']]},
- production:{title:'Production constraint',sub:'Line throughput, screw speed, output continuity and product quality.',kpis:[['Line output',()=>s.output+'%'],['Screw speed',()=>s.rpm+'%'],['Product quality',()=>s.quality+'%'],['Active batch',()=>s.sku]],metrics:[['Twin-Screw Extruder','Stage 2 · extrusion rate',[['Screw speed',()=>s.rpm+'%','rpm'],['Zone 3 temperature',()=>s.temp+'°C','temp']]],['Haul-Off & Cutter','Stage 4 · line throughput',[['Line output',()=>s.output+'%','output'],['Drive speed',()=>s.rpm+'%','rpm']]],['Belling & Bundling','Stage 5 · finishing',[['Throughput',()=>Math.round(s.output*.55)+'%','output'],['Product quality',()=>s.quality+'%','quality']]]],charts:[['Production output','% reference',()=>[{name:'Line output',data:trend(s.output,s.output<90?0:.1),color:'#46c7df'}],null,null],['Screw speed','% reference speed',()=>[{name:'Screw speed',data:trend(s.rpm,0),color:'#7da8ff'}],null,null]]}
+  compound:{
+    title:'Compound resilience · multi-constraint view',
+    sub:'Simultaneous power, thermal, cooling, and edge-buffering visibility across the line.',
+    fourCol:true,
+    kpis:[
+      ['Supply & Gen Load',()=>s.grid?'Grid (0% Gen)':s.ats?'ATS (45s)':'Gen · '+s.gen+'%',()=>s.ats?'Transferring to backup diesel':s.grid?'Utility power active':'Ceiling threshold: 95%'],
+      ['Zone 3 Barrel Temp',()=>s.temp+'°C',()=>s.predictBreach?'Breach in 28 min (>205°C)':'Limit: 205°C · Margin: '+Math.max(0,205-s.temp)+'°C'],
+      ['WAN & Edge Buffer',()=>s.net===0?'Offline ('+s.buffer+'%)':'Online ('+s.buffer+'%)',()=>s.net===0?'Store-and-Forward caching active':s.reconciled?'1,420 records reconciled':'Cloud sync nominal'],
+      ['Output & Active SKU',()=>s.output+'% · '+s.sku.split(' ')[0],()=>s.sku+' · Quality '+s.quality+'%']
+    ],
+    metrics:[
+      ['Power & Generator','Supply & electrical load',[['Supply state',()=>s.grid?'Grid':s.ats?'ATS':'Diesel','gen'],['Generator load',()=>s.gen+'%','gen']]],
+      ['Twin-Screw Extruder','Stage 2 · thermal bottleneck',[['Zone 3 temp',()=>s.temp+'°C','temp'],['Screw speed',()=>s.rpm+'%','rpm']]],
+      ['Calibration & Chiller','Stage 3 · cooling loop',[['Cooling water',()=>s.cool+'°C','cool'],['Thermal margin',()=>Math.max(0,205-s.temp)+'°C','temp']]],
+      ['Edge Gateway (ESP32)','Store-and-Forward buffer',[['WAN link',()=>s.net+'%','net'],['Local buffer',()=>s.buffer+'%','buffer']]]
+    ],
+    charts:[
+      ['Compound risk trajectory (60-min look-ahead)','% of critical threshold',()=>[
+        {name:'Zone 3 thermal (% of 205°C)',data:trend(Math.round(s.temp/205*100),s.predictBreach?0.7:s.derated?-0.4:0),color:'#f47777'},
+        {name:'Generator load (%)',data:trend(s.gen,s.predictBreach?0.4:0),color:'#f4bd59'}
+      ],95,'95% overload / degradation threshold'],
+      ['Edge buffer & connectivity continuity','%',()=>[
+        {name:'WAN availability',data:trend(s.net,0),color:'#46c7df'},
+        {name:'Edge buffer used',data:trend(s.buffer,s.net===0?1.1:0),color:'#b388ff'}
+      ],80,'80% edge buffer warning']
+    ]
+  },
+  power:{
+    title:'Power constraint',
+    sub:'Supply state, generator loading and machine-level electrical demand.',
+    kpis:[
+      ['Supply source',()=>s.grid?'Grid':s.ats?'ATS transfer':'Generator',()=>'Automatic Transfer Switch: 45s'],
+      ['Generator load',()=>s.gen+'%',()=>'Alert threshold: 85% · Trip: 95%'],
+      ['Transfer state',()=>s.ats?'45-second ATS':'Stable',()=>s.grid?'Utility connected':'Backup diesel mode'],
+      ['Line availability',()=>s.ats?'Transfer':'Available',()=>s.derated?'Derated to protect headroom':'Full power headroom']
+    ],
+    metrics:[
+      ['Resin Mixing & Feeding','Stage 1 · material preparation',[['Drive demand',()=>Math.round(s.gen*.65)+'%','gen'],['Feed drive',()=>Math.round(s.rpm*.72)+'%','rpm']]],
+      ['Twin-Screw Extruder','Stage 2 · process bottleneck',[['Electrical load',()=>Math.round(s.gen)+'%','gen'],['Screw speed',()=>s.rpm+'%','rpm']]],
+      ['Cooling & Calibration','Stage 3 · auxiliary systems',[['Auxiliary demand',()=>Math.round(s.gen*.24)+'%','gen'],['Cooling pump',()=>Math.round(s.gen*.18)+'%','gen']]]
+    ],
+    charts:[
+      ['Generator loading','% capacity',()=>[{name:'Generator load',data:trend(s.gen,s.predictBreach?0.4:0),color:'#f4bd59'}],95,'Generator trip limit (95%)'],
+      ['Machine electrical demand','% reference',()=>[{name:'Extruder',data:trend(s.gen,0),color:'#46c7df'},{name:'Auxiliaries',data:trend(s.gen*.24,0),color:'#4bd39a'}],null,null]
+    ]
+  },
+  thermal:{
+    title:'Thermal constraint',
+    sub:'Extruder zone temperatures, shear heat drift and polymer degradation margin.',
+    kpis:[
+      ['Zone 3 temperature',()=>s.temp+'°C',()=>s.predictBreach?'+1.5°C/min escalation':'Operating band: 160–195°C'],
+      ['Critical limit',()=>'205°C',()=>'PVC thermal degradation point'],
+      ['Thermal margin',()=>Math.max(0,205-s.temp)+'°C',()=>s.predictBreach?'28 min to breach':'Safe operating margin'],
+      ['Operating response',()=>s.derated?'Derated (-6°C)':'Nominal',()=>s.derated?'Leveraging internal shear heat':'Standard heater profile']
+    ],
+    metrics:[
+      ['Twin-Screw Extruder','Stage 2 · heat generation',[['Zone 3',()=>s.temp+'°C','temp'],['Screw speed',()=>s.rpm+'%','rpm']]],
+      ['Calibration & Cooling','Stage 3 · heat removal',[['Cooling water',()=>s.cool+'°C','cool'],['Thermal load',()=>Math.round((s.temp-160)/60*100)+'%','temp']]],
+      ['Haul-Off & Cutter','Stage 4 · line synchronisation',[['Line speed',()=>s.rpm+'%','rpm'],['Process state',()=>s.derated?'Reduced':'Nominal','rpm']]]
+    ],
+    charts:[
+      ['Extruder Zone 3 trajectory','°C',()=>[{name:'Zone 3 temperature',data:trend(s.temp,s.predictBreach?0.9:s.derated?-0.5:0),color:'#f47777'}],205,'205°C PVC degradation limit'],
+      ['Thermal risk index','%',()=>[{name:'Thermal risk',data:trend(Math.max(0,(s.temp-175)/30*100),s.predictBreach?1.2:0),color:'#f4bd59'}],100,'High-risk boundary']
+    ]
+  },
+  cooling:{
+    title:'Cooling constraint',
+    sub:'Vacuum tank cooling-water temperature, chiller recovery and dimensional stability.',
+    kpis:[
+      ['Cooling water',()=>s.cool+'°C',()=>'Target setpoint: 20°C'],
+      ['Alert threshold',()=>'30°C',()=>'Dimensional distortion risk'],
+      ['Thermal margin',()=>Math.max(0,30-s.cool)+'°C',()=>s.cool>=30?'Chiller saturated':'Within cooling capacity'],
+      ['Cooling condition',()=>s.cool>=30?'Constrained':'Stable',()=>s.reconciled?'Chiller restored to 20°C':'Closed-loop water circulation']
+    ],
+    metrics:[
+      ['Vacuum Calibration','Stage 3 · primary cooling',[['Water temperature',()=>s.cool+'°C','cool'],['Cooling demand',()=>Math.min(100,Math.round(s.cool/40*100))+'%','cool']]],
+      ['Twin-Screw Extruder','Stage 2 · heat input',[['Zone 3 temperature',()=>s.temp+'°C','temp'],['Screw speed',()=>s.rpm+'%','rpm']]],
+      ['Haul-Off & Cutter','Stage 4 · dimensional control',[['Line speed',()=>s.rpm+'%','rpm'],['Output rate',()=>s.output+'%','output']]]
+    ],
+    charts:[
+      ['Cooling-water temperature','°C',()=>[{name:'Cooling water',data:trend(s.cool,s.cool>=30?0.25:-0.1),color:'#4bd39a'}],30,'30°C alert threshold'],
+      ['Extruder zone temperature','°C',()=>[{name:'Zone 3',data:trend(s.temp,s.cool>=30?0.6:-0.1),color:'#46c7df'}],205,'205°C critical limit']
+    ]
+  },
+  connectivity:{
+    title:'Connectivity & edge-buffering constraint',
+    sub:'Telecom WAN availability, ESP32 Store-and-Forward caching and Eventual Consistency sync.',
+    kpis:[
+      ['WAN availability',()=>s.net+'%',()=>s.net===0?'Telecom blackout active':'Cloud telemetry link active'],
+      ['Edge buffer used',()=>s.buffer+'%',()=>s.net===0?'Caching locally on edge flash':'Buffer healthy'],
+      ['Data visibility',()=>s.net===0?'Edge Only (HITL)':'Cloud + Edge',()=>'Zero shop-floor blindness'],
+      ['Reconciliation',()=>s.reconciled?'1,420 Synced':'0% Packet Loss',()=>s.reconciled?'Chronological timestamp merge':'Eventual consistency ready']
+    ],
+    metrics:[
+      ['Edge Gateway (ESP32)','Store-and-Forward engine',[['WAN availability',()=>s.net+'%','net'],['Buffer utilisation',()=>s.buffer+'%','buffer']]],
+      ['HITL Operator Terminal','Manual event & SKU logging',[['Local operator log',()=>'Active','net'],['Timestamp queue',()=>s.net===0?'Buffering':'Synced','buffer']]],
+      ['Cloud Twin Sync','Reconciliation service',[['Record integrity',()=>'100%','output'],['Duplicate conflicts',()=>'0','net']]]
+    ],
+    charts:[
+      ['WAN availability','%',()=>[{name:'WAN availability',data:trend(s.net,0),color:'#46c7df'}],20,'Edge-only fallback boundary'],
+      ['Edge buffer utilisation','%',()=>[{name:'Buffer used',data:trend(s.buffer,s.net===0?1.2:0),color:'#b388ff'}],80,'80% high buffer threshold']
+    ]
+  },
+  production:{
+    title:'Production constraint',
+    sub:'Line throughput, screw speed, SKU scheduling and scrap minimisation.',
+    kpis:[
+      ['Line output',()=>s.output+'%',()=>'Reference batch rate'],
+      ['Screw speed',()=>s.rpm+'%',()=>s.derated?'Derated by 18%':'Nominal RPM'],
+      ['Product quality',()=>s.quality+'%',()=>'Scrap kept below 2%'],
+      ['Active batch SKU',()=>s.sku,()=>s.derated?'Temporary low-load SKU':'Primary heavy-wall order']
+    ],
+    metrics:[
+      ['Twin-Screw Extruder','Stage 2 · extrusion rate',[['Screw speed',()=>s.rpm+'%','rpm'],['Zone 3 temperature',()=>s.temp+'°C','temp']]],
+      ['Haul-Off & Cutter','Stage 4 · line throughput',[['Line output',()=>s.output+'%','output'],['Drive speed',()=>s.rpm+'%','rpm']]],
+      ['Belling & Bundling','Stage 5 · finishing',[['Throughput',()=>Math.round(s.output*.95)+'%','output'],['Product quality',()=>s.quality+'%','quality']]]
+    ],
+    charts:[
+      ['Production output','% reference',()=>[{name:'Line output',data:trend(s.output,0),color:'#46c7df'}],null,null],
+      ['Screw speed','% reference speed',()=>[{name:'Screw speed',data:trend(s.rpm,0),color:'#7da8ff'}],null,null]
+    ]
+  }
 };
-function trend(base,slope){return Array.from({length:13},(_,i)=>Math.max(0,base+slope*i+Math.sin(i*1.4)*.35))}
-function severity(key,v){if(key==='temp')return v>=205?'bad':v>=195?'warn':'good';if(key==='gen')return v>=95?'bad':v>=85?'warn':'good';if(key==='cool')return v>=30?'warn':'good';if(key==='net')return v<20?'bad':v<80?'warn':'good';if(key==='buffer')return v>=80?'bad':v>=60?'warn':'good';return 'good'}
-function renderKpis(view){$('kpis').innerHTML=view.kpis.map(([label,get],i)=>`<div class="panel kpi-card" id="kpi${i}"><div class="kpi-label">${label}</div><div class="kpi-value">${get()}</div><div class="kpi-sub">${i===0?'Selected constraint indicator':'Live illustrative value'}</div></div>`).join('')}
-function renderMachines(view){$('machineHeading').textContent=view.title+' · machine detail';$('machineSub').textContent=view.sub;$('machineCards').innerHTML=view.metrics.map(([name,stage,metrics])=>`<article class="machine"><h3>${name}</h3><div class="stage">${stage}</div>${metrics.map(([label,get,key])=>{let raw=key==='temp'?s.temp:key==='cool'?s.cool:key==='gen'?s.gen:key==='rpm'?s.rpm:key==='net'?s.net:key==='buffer'?s.buffer:key==='output'?s.output:98;let max=key==='temp'?220:key==='cool'?40:110;let pct=Math.max(2,Math.min(100,raw/max*100));let sev=severity(key,raw);return `<div class="metric"><span>${label}</span><b class="${sev}">${get()}</b></div><div class="bar"><i style="width:${pct}%;background:${sev==='bad'?'var(--red)':sev==='warn'?'var(--amber)':'var(--cyan)'}"></i></div>`}).join('')}</article>`).join('')}
-function chart(title,unit,lines,threshold,label){const W=520,H=170,L=38,R=12,T=13,B=25,all=lines.flatMap(x=>x.data).concat(threshold===null?[]:[threshold]),min=Math.floor(Math.min(...all)*.88),max=Math.ceil(Math.max(...all)*1.08)||1;const x=i=>L+i*(W-L-R)/12,y=v=>T+(max-v)/(max-min||1)*(H-T-B);let out=`<div class="panel chart-panel"><div class="chart-title"><h3>${title}</h3><small>${unit}</small></div><svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${title} chart">`;for(let j=0;j<4;j++){let v=min+(max-min)*j/3,yy=y(v);out+=`<line class="gridline" x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}"/><text class="tick" x="${L-6}" y="${yy+3}" text-anchor="end">${Math.round(v)}</text>`}if(threshold!==null){let yy=y(threshold);out+=`<line x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}" stroke="#f47777" stroke-dasharray="5 4"/><text x="${W-R}" y="${yy-4}" text-anchor="end" fill="#f47777" font-size="9">${label}</text>`}lines.forEach(l=>{out+=`<path class="series" stroke="${l.color}" d="${l.data.map((v,i)=>(i?'L':'M')+x(i)+','+y(v)).join(' ')}"/>`});out+=`<text class="tick" x="${L}" y="${H-6}">Now</text><text class="tick" x="${W-R}" y="${H-6}" text-anchor="end">+60 min</text></svg><div class="legend">${lines.map(l=>`<span><i style="background:${l.color}"></i>${l.name}</span>`).join('')}${threshold!==null?'<span><i style="background:#f47777"></i>Limit</span>':''}</div></div>`;return out}
-function renderCharts(view){$('charts').innerHTML=view.charts.map(c=>chart(c[0],c[1],c[2](),c[3]??null,c[4])).join('')}
-function renderDecisions(key){let items=[];if(key==='power'){if(s.ats)items.push(['ATS transfer','Generator remains at 0% until it takes over the line.','warn']);if(s.gen>=85)items.push(['Generator headroom','Generator loading is elevated; assess non-critical loads and derating.','warn']);if(s.grid)items.push(['Grid supply active','Utility grid supplies the line; generator load is 0%.','good']);if(s.derated)items.push(['Dynamic derating active','Generator loading reduced to the 76% target.','good'])}if(key==='thermal'&&s.temp>=195)items.push(['Thermal drift','Zone 3 is approaching the illustrative 205°C critical limit.','warn']);if(key==='cooling'&&s.cool>=30)items.push(['Cooling constraint','Cooling-water temperature is above the illustrative 30°C alert threshold.','warn']);if(key==='connectivity'&&s.net<80)items.push(['Connectivity degradation','Maintain local edge logging and queue events for later reconciliation.','warn']);if(key==='production'&&s.output<90)items.push(['Reduced production rate','Line output is below nominal during the selected operating state.','warn']);if(!items.length)items.push(['Normal monitoring','No active rule-based alert for this constraint. Continue monitoring machine state and data continuity.','good']);$('decisions').innerHTML=items.map(([a,b,c])=>`<div class="decision"><strong class="${c}">${a}</strong><p>${b}</p></div>`).join('')}
-function render(){let key=$('constraintSelect').value,view=views[key];renderKpis(view);renderMachines(view);renderCharts(view);renderDecisions(key);$('clock').textContent=s.time.length===8?s.time:s.time+':00';let critical=s.temp>=205||s.gen>=95||s.net<10;document.querySelectorAll('.kpi-card').forEach((el,i)=>{let isCritical=(key==='power'&&i===1&&s.gen>=95)||(key==='thermal'&&i===0&&s.temp>=205)||(key==='connectivity'&&i===0&&s.net<10);el.classList.toggle('critical-pulse',isCritical);el.classList.toggle('warning-glow',!isCritical&&((key==='thermal'&&i===0&&s.temp>=195)||(key==='power'&&i===1&&s.gen>=85)))});$('lineBadge').className='status '+(critical?'bad':s.derated?'warn':'good');$('lineBadge').innerHTML='<i class="dot"></i> '+(critical?'Critical condition':s.derated?'Derated operation':'Line operating');$('overallBadge').className='status '+(critical?'bad':s.ats?'warn':'good');$('overallBadge').innerHTML='<i class="dot"></i> '+(critical?'Critical condition':s.ats?'ATS transfer':s.state);$('stageBadge').textContent=`Stage ${stageIndex+1} / ${scenarios.length}`;$('scenarioSelect').value=scenarios[selectedTarget].id;const target=scenarios[selectedTarget];$('scenarioDesc').innerHTML=`<strong>Target: ${target.name}</strong>${target.sub}`;$('progressBar').style.width=((stageIndex+1)/scenarios.length*100)+'%';$('progressText').textContent=`${stageIndex+1} of ${scenarios.length} scenario states · ${s.sku}`;}
-function selectStage(i){stageIndex=Math.max(0,Math.min(scenarios.length-1,i));selectedTarget=stageIndex;s={...scenarios[stageIndex]};render()}
-function stop(){playing=false;if(raf)cancelAnimationFrame(raf);clearTimeout(startTimer);$('playBtn').textContent='▶ Play transition'}
+
+function trend(base,slope){
+  return Array.from({length:13},(_,i)=>Math.max(0,Math.min(105,base+slope*i+(slope===0?Math.sin(i*1.3)*0.3:0))));
+}
+
+function severity(key,v){
+  if(key==='temp')return v>=205?'bad':v>=195?'warn':'good';
+  if(key==='gen')return v>=95?'bad':v>=85?'warn':'good';
+  if(key==='cool')return v>=30?'warn':'good';
+  if(key==='net')return v<20?'bad':v<80?'warn':'good';
+  if(key==='buffer')return v>=80?'warn':'good';
+  return 'good';
+}
+
+function renderPills(){
+  $('timelinePills').innerHTML=scenarios.map((sc,i)=>`
+    <button class="pill ${i===stageIndex?'active':''}" onclick="jumpTo(${i})">
+      ${sc.short}<span>${sc.label}</span>
+    </button>
+  `).join('');
+}
+
+function renderKpis(view){
+  $('kpis').innerHTML=view.kpis.map(([label,get,sub],i)=>`
+    <div class="panel kpi-card" id="kpi${i}">
+      <div class="kpi-label">${label}</div>
+      <div class="kpi-value">${get()}</div>
+      <div class="kpi-sub">${sub()}</div>
+    </div>
+  `).join('');
+}
+
+function renderMachines(view){
+  $('machineHeading').textContent=view.title;
+  $('machineSub').textContent=view.sub;
+  const grid=$('machineCards');
+  grid.className='machine-grid'+(view.fourCol?' four-col':'');
+  grid.innerHTML=view.metrics.map(([name,stage,metrics])=>`
+    <article class="machine">
+      <h3>${name}</h3>
+      <div class="stage">${stage}</div>
+      ${metrics.map(([label,get,key])=>{
+        let raw=key==='temp'?s.temp:key==='cool'?s.cool:key==='gen'?s.gen:key==='rpm'?s.rpm:key==='net'?s.net:key==='buffer'?s.buffer:key==='output'?s.output:98;
+        let max=key==='temp'?220:key==='cool'?40:110;
+        let pct=Math.max(4,Math.min(100,raw/max*100));
+        let sev=severity(key,raw);
+        let col=sev==='bad'?'var(--red)':sev==='warn'?'var(--amber)':'var(--cyan)';
+        return `<div class="metric"><span>${label}</span><b class="${sev}">${get()}</b></div><div class="bar"><i style="width:${pct}%;background:${col}"></i></div>`;
+      }).join('')}
+    </article>
+  `).join('');
+}
+
+function chart(title,unit,lines,threshold,label){
+  const W=520,H=160,L=36,R=12,T=14,B=22;
+  const all=lines.flatMap(x=>x.data).concat(threshold===null?[]:[threshold]);
+  const min=Math.max(0,Math.floor(Math.min(...all)*0.85));
+  const max=Math.ceil(Math.max(...all)*1.08)||1;
+  const x=i=>L+i*(W-L-R)/12;
+  const y=v=>T+(max-v)/(max-min||1)*(H-T-B);
+  let out=`<div class="panel chart-panel"><div class="chart-title"><h3>${title}</h3><small>${unit}</small></div><svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}">`;
+  for(let j=0;j<4;j++){
+    let v=min+(max-min)*j/3,yy=y(v);
+    out+=`<line class="gridline" x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}"/><text class="tick" x="${L-5}" y="${yy+3}" text-anchor="end">${Math.round(v)}</text>`;
+  }
+  if(threshold!==null){
+    let yy=y(threshold);
+    out+=`<line x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}" stroke="#f47777" stroke-dasharray="5 4"/><text x="${W-R}" y="${yy-4}" text-anchor="end" fill="#f47777" font-size="9">${label}</text>`;
+  }
+  lines.forEach(l=>{
+    out+=`<path class="series" stroke="${l.color}" d="${l.data.map((v,i)=>(i?'L':'M')+x(i)+','+y(v)).join(' ')}"/>`;
+  });
+  out+=`<text class="tick" x="${L}" y="${H-5}">Now</text><text class="tick" x="${W-R}" y="${H-5}" text-anchor="end">+60 min</text></svg>`;
+  out+=`<div class="legend">${lines.map(l=>`<span><i style="background:${l.color}"></i>${l.name}</span>`).join('')}${threshold!==null?'<span><i style="background:#f47777"></i>Threshold</span>':''}</div></div>`;
+  return out;
+}
+
+function renderCharts(view){
+  $('charts').innerHTML=view.charts.map(c=>chart(c[0],c[1],c[2](),c[3]??null,c[4])).join('');
+}
+
+function renderDecisions(){
+  let html='';
+  if(s.showOptions){
+    html+=`
+      <div class="decision">
+        <strong class="good">Optimisation Matrix · Option C Selected (Dynamic Capabilities: Transform)</strong>
+        <p>Evaluated 3 operational responses against generator ceiling (95%) and PVC thermal limit (205°C):</p>
+        <div class="opt-grid">
+          <div class="opt-card"><b class="bad">Option A · Status Quo</b>110mm @ 100% RPM. Breaches 205°C in 28m; 4-hr teardown &amp; gen trip.</div>
+          <div class="opt-card"><b class="warn">Option B · E-Stop</b>Immediate shutdown. Barrel freeze, high purge scrap &amp; restart delay.</div>
+          <div class="opt-card selected"><b class="good">Option C · Active ✓</b>-18% RPM, -6°C Zone 3, 25mm SKU. Gen drops to 76%; scrap &lt;2%.</div>
+        </div>
+      </div>
+    `;
+  }
+  if(s.predictBreach){
+    html+=`<div class="decision"><strong class="bad">60-Min Look-Ahead Alert · Thermal Degradation &amp; Gen Overload</strong><p>At +1.5°C/min, Zone 3 hits 205°C in 28 mins and diesel load exceeds 95%. Recommending immediate transition to Option C derating.</p></div>`;
+  }
+  if(s.ats){
+    html+=`<div class="decision"><strong class="warn">Grid Loss Detected · 45s ATS Changeover</strong><p>Power-Aware State Matrix triggered. Maintaining critical barrel instrumentation on local UPS while diesel generator spins up.</p></div>`;
+  }
+  if(s.net===0){
+    html+=`<div class="decision"><strong class="cyan">Store-and-Forward Edge Buffering Active (${s.buffer}% used)</strong><p>Telecom WAN offline. ESP32 edge gateway &amp; HITL operator terminal caching telemetry locally with chronological timestamps—zero data blindness.</p></div>`;
+  }
+  if(s.reconciled){
+    html+=`<div class="decision"><strong class="good">3-Stage Recovery &amp; Eventual Consistency Sync Complete</strong><p>Stage 1: Grid &amp; chiller (20°C) stabilised. Stage 2: +5% incremental RPM ramp. Stage 3: Resumed 110mm SKU &amp; synced 1,420 cached records (0 duplicates).</p></div>`;
+  }
+  if(!html){
+    html=`<div class="decision"><strong class="good">Nominal Grid Monitoring · Full Cloud &amp; Edge Sync</strong><p>All subsystems operating within validated setpoints. Continuous telemetry streaming from brownfield ESP32 sensors and HITL terminal.</p></div>`;
+  }
+  $('decisions').innerHTML=html;
+}
+
+function render(){
+  const view=views[activeView];
+  renderPills();
+  renderKpis(view);
+  renderMachines(view);
+  renderCharts(view);
+  renderDecisions();
+
+  $('clock').textContent=s.time.length===8?s.time:s.time+':00';
+  $('fnBadge').textContent=s.fn;
+
+  let critical=s.temp>=205||s.gen>=95||s.predictBreach;
+  let warn=s.ats||s.gen>=85||s.net===0||s.derated;
+
+  document.querySelectorAll('.kpi-card').forEach((el,i)=>{
+    el.classList.toggle('critical-pulse',critical && (i===0||i===1));
+    el.classList.toggle('warning-glow',!critical && warn && (i===0||i===2));
+  });
+
+  $('lineBadge').className='status '+(critical?'bad':s.derated?'warn':'good');
+  $('lineBadge').innerHTML='<i class="dot"></i> '+(critical?'Breach forecast':s.derated?'Derated (Option C)':'Line operating');
+
+  $('overallBadge').className='status '+(critical?'bad':warn?'warn':'good');
+  $('overallBadge').innerHTML='<i class="dot"></i> '+s.state;
+
+  $('stageBadge').textContent=`Step ${stageIndex+1} / ${scenarios.length}`;
+  const cur=scenarios[stageIndex];
+  $('scenarioDesc').innerHTML=`<strong>${cur.name}</strong>${cur.sub}`;
+  $('progressBar').style.width=((stageIndex+1)/scenarios.length*100)+'%';
+  $('progressText').textContent=`${cur.fn} · SKU: ${s.sku} · WAN: ${s.net}%`;
+
+  $('backBtn').disabled=stageIndex===0;
+  $('nextBtn').disabled=stageIndex===scenarios.length-1;
+}
+
+function stopWalkthrough(){
+  walking=false;
+  if(raf)cancelAnimationFrame(raf);
+  clearTimeout(stepTimer);
+  $('walkthroughBtn').textContent='▶ Run Full Walkthrough';
+}
+
+function jumpTo(i){
+  stopWalkthrough();
+  stageIndex=Math.max(0,Math.min(scenarios.length-1,i));
+  s={...scenarios[stageIndex]};
+  render();
+}
+
 function ease(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
-function animateTo(i){let target=scenarios[i],from={...s},begin=performance.now(),duration=2200; function frame(now){let t=Math.min(1,(now-begin)/duration),e=ease(t);['gen','temp','cool','rpm','net','buffer','output','quality'].forEach(k=>s[k]=Math.round((from[k]+(target[k]-from[k])*e)*10)/10);s.state=target.state;s.sub=target.sub;s.time=target.time;s.sku=target.sku;s.derated=target.derated;s.grid=target.grid;s.ats=target.ats;render();if(t<1&&playing)raf=requestAnimationFrame(frame);else if(playing){s={...target};stageIndex=i;render();if(i===scenarios.length-1)stop();else startTimer=setTimeout(()=>animateTo(i+1),650)}}raf=requestAnimationFrame(frame)}
-function play(){if(playing){stop();return}if(selectedTarget===stageIndex){$('progressText').textContent='Choose a different target state to animate.';return}playing=true;$('playBtn').textContent='Ⅱ Pause';animateTo(selectedTarget)}
-scenarios.forEach((x,i)=>{let o=document.createElement('option');o.value=x.id;o.textContent=x.name;$('scenarioSelect').appendChild(o)});
-$('constraintSelect').addEventListener('change',()=>render());$('scenarioSelect').addEventListener('change',e=>{stop();selectedTarget=scenarios.findIndex(x=>x.id===e.target.value);render()});$('playBtn').onclick=play;$('nextBtn').onclick=()=>{stop();selectStage(stageIndex+1)};$('backBtn').onclick=()=>{stop();selectStage(stageIndex-1)};$('resetBtn').onclick=()=>{stop();selectStage(0)};
-$('presentBtn').onclick=()=>{presentation=!presentation;document.body.classList.toggle('presentation',presentation);$('presentBtn').textContent=presentation?'⊙ Exit presentation':'◎ Presentation mode';if(presentation&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});else if(!presentation&&document.fullscreenElement)document.exitFullscreen().catch(()=>{})};
-selectStage(0);
+
+function animateStep(targetIdx){
+  const target=scenarios[targetIdx],from={...s},begin=performance.now(),duration=1400;
+  function frame(now){
+    const t=Math.min(1,(now-begin)/duration),e=ease(t);
+    ['gen','temp','cool','rpm','net','buffer','output','quality'].forEach(k=>{
+      s[k]=Math.round((from[k]+(target[k]-from[k])*e)*10)/10;
+    });
+    s.state=target.state;s.sub=target.sub;s.time=target.time;s.sku=target.sku;s.fn=target.fn;
+    s.derated=target.derated;s.grid=target.grid;s.ats=target.ats;
+    s.predictBreach=target.predictBreach;s.showOptions=target.showOptions;s.reconciled=target.reconciled;
+    render();
+    if(t<1 && walking){
+      raf=requestAnimationFrame(frame);
+    }else if(walking){
+      s={...target};
+      stageIndex=targetIdx;
+      render();
+      if(stageIndex<scenarios.length-1){
+        stepTimer=setTimeout(()=>animateStep(stageIndex+1),2400);
+      }else{
+        stopWalkthrough();
+      }
+    }
+  }
+  raf=requestAnimationFrame(frame);
+}
+
+$('walkthroughBtn').onclick=()=>{
+  if(walking){stopWalkthrough();return;}
+  if(stageIndex>=scenarios.length-1){
+    stageIndex=0;
+    s={...scenarios[0]};
+    render();
+  }
+  walking=true;
+  $('walkthroughBtn').textContent='Ⅱ Pause Walkthrough';
+  animateStep(stageIndex+1);
+};
+
+$('nextBtn').onclick=()=>jumpTo(stageIndex+1);
+$('backBtn').onclick=()=>jumpTo(stageIndex-1);
+$('resetBtn').onclick=()=>jumpTo(0);
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false')});
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected','true');
+    activeView=btn.dataset.view;
+    render();
+  };
+});
+
+$('presentBtn').onclick=()=>{
+  presentation=!presentation;
+  document.body.classList.toggle('presentation',presentation);
+  $('presentBtn').textContent=presentation?'⊙ Exit presentation':'◎ Presentation mode';
+  if(presentation && document.documentElement.requestFullscreen){
+    document.documentElement.requestFullscreen().catch(()=>{});
+  }else if(!presentation && document.fullscreenElement){
+    document.exitFullscreen().catch(()=>{});
+  }
+};
+
+jumpTo(0);
 </script>
-</body></html>
+</body>
+</html>
